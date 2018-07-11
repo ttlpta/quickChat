@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #messages { margin-bottom: 40px }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        // var socket = io();
+        // $('form').submit(function(){
+        //   socket.emit('chat message', $('#m').val());
+        //   $('#m').val('');
+        //   return false;
+        // });
+        // socket.on('chat message', function(msg){
+        //   $('#messages').append($('<li>').text(msg));
+        //   window.scrollTo(0, document.body.scrollHeight);
+        // });
+          const roomName = prompt("Please fill your room", "");
+          const chat = io.connect('http://192.168.8.142/chat');
+          // const news = io.connect('http://localhost/news');
+          
+          if(!roomName) {
+            alert('Go away!');
+            return;
+          }
+            
+          chat.on('connect', function () {
+            $('#messages').append($('<li>').text('connected'));
+            chat.emit('room', roomName);  
+          });
+
+          $('form').submit(function() {
+            const msg = $('#m').val();
+            const data = {
+              room : roomName,
+              msg
+            };
+            chat.emit('chat message', data);
+            $('#messages').append($('<li>').text(msg));
+            $('#m').val('');
+            
+            return false;
+          });
+          
+          chat.on('chat message 2', function(msg){
+            $('#messages').append($('<li>').text(msg));
+            window.scrollTo(0, document.body.scrollHeight);
+          });
+
+          // news.on('news', function () {
+          //   news.emit('woot');
+          // });
+      });
+    </script>
+  </body>
+</html>
