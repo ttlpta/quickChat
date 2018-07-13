@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+  quickchat: 
+    build: .
+    container_name: quickchat
+    restart: always
+    ports: 
+      - "3001:3001"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
