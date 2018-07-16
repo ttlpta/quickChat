@@ -1,6 +1,12 @@
 version: "2"
 
 services:
+  mongodb: 
+    build: ./mongo
+    container_name: quickchatmongodb
+    restart: always
+    ports: 
+      - "27018:27017"
   quickchat: 
     build: .
     container_name: quickchat
@@ -10,3 +16,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    links:
+      - mongodb #Need to link to mongodb container to run same network
+    depends_on:
+      - mongodb
