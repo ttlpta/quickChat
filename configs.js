@@ -1,7 +1,7 @@
 module.exports = {
   jwtToken : 'tadepzai',
-  jwtExpiredTine : '2h', // expires in 24 hours
-  jwtExpiredLongTine : '2 days', // expires in 1 month
+  jwtExpiredTine : 24 * 60 * 60, // expires in 24 hours
+  jwtExpiredLongTine : 365 * 24 * 60 * 60, // expires in 1 year
   CANDIDATE_TYPE : 1,
   SEEKER_TYPE : 2,
   NO_TYPE : 0
