@@ -9,6 +9,7 @@ router.put('/loginFb', userCtrl.loginFb);
 router.put('/logingg', userCtrl.logingg);
 router.put('/logout', userCtrl.logout);
 
+router.get('/checkExpiredToken', userCtrl.checkExpiredToken);
 router.get('/detail', userCtrl.detail);
 router.put('/detail', userCtrl.updateProfile);
 

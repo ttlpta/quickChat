@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link, Redirect } from "react-router-dom";
 
 import axios from "../axios";
 import SocialLogin from "./SocialLogin";
@@ -54,7 +55,7 @@ export default class Login extends Component
               onChange={ this.onChange }
             />
           </div>
-          <h3>You don't have account? <span className="term"><a href="/signup">Signup</a></span></h3>
+          <h3>You don't have account? <span className="term"><Link to="/signup">Signup</Link></span></h3>
           <div className="submit">
             <input type="submit" value="Login" />
           </div>

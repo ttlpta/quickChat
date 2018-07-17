@@ -112,4 +112,6 @@ UserController.prototype.logout = async (req, res, next) => {
   }
 }
 
+UserController.prototype.checkExpiredToken = (req, res, next) => res.json({ success: true, isExpired : false });
+
 module.exports = new UserController();

@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
+import { checkIsLogging } from "../utils";
 import Login from './Login';
 import Signup from './Signup';
 import Chat from './Chat';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const isLoggin = false;
+  const isLoggin = checkIsLogging();
+  console.log(isLoggin);
   return (<Route { ...rest } render={ props => (
     isLoggin ? (
       <Component { ...props }/>
