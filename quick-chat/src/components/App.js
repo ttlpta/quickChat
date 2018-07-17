@@ -9,6 +9,7 @@ import Chat from './Chat';
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const isLoggin = checkIsLogging();
   console.log(isLoggin);
+
   return (<Route { ...rest } render={ props => (
     isLoggin ? (
       <Component { ...props }/>

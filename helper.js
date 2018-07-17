@@ -1,11 +1,19 @@
 const jwt = require('jsonwebtoken');
 const configs = require('./configs');
+const moment = require('moment');
 
 module.exports = {
-  getJwtToken : (id, keepLogin) => {
-    return jwt.sign({ id }, configs.jwtToken, {
-      expiresIn: keepLogin ? configs.jwtExpiredLongTine : configs.jwtExpiredTine // expires in 24 hours
-    });
+  getJwtToken : (id, keepLogin = false) => {
+    const dateTime = Date.now();
+    const timestamp = Math.floor(dateTime / 1000);
+    const expiredTime = moment().format();
+    
+    return {
+      token : jwt.sign({ id }, configs.jwtToken, {
+        expiresIn: keepLogin ? configs.jwtExpiredLongTine : configs.jwtExpiredTine // expires in 24 hours
+      }),
+      expiredTime
+    }
   },
   verifyJwtToken : token => {
     return jwt.verify(token, configs.jwtToken);

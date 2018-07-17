@@ -14,7 +14,7 @@ UserController.prototype.regist = async (req, res, next) => {
     const userSaved = await user.save();
     const token = helpers.getJwtToken(userSaved._id);
 
-    return res.json(helpers.success({ token, id : userSaved._id }));
+    return res.json(helpers.success({ ...token, id : userSaved._id }));
   } catch(err) {
     return res.status(400).json(helpers.fail(err.code == 11000 ? 'Email is existed' : err.message));
   }
@@ -25,13 +25,13 @@ UserController.prototype.loginFb = async (req, res, next) => {
   try {
     const userData = await userModel.findOne({ email }).select('id token').exec();
     if(userData)
-      return res.json(helpers.success({ token : helpers.getJwtToken(userData._id), id : userData._id }));
+      return res.json(helpers.success({ ...helpers.getJwtToken(userData._id), id : userData._id }));
     
     const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
     const user = new userModel({ ...req.body, password: 'na', expriedTime, type : configs.NO_TYPE });
     const userSaved = await user.save();
     
-    return res.json(helpers.success({ token : helpers.getJwtToken(userSaved._id), id : userSaved._id }));
+    return res.json(helpers.success({ ...helpers.getJwtToken(userSaved._id), id : userSaved._id }));
   } catch(err) {
     return res.status(400).json(helpers.fail(err.message));
   }
@@ -55,7 +55,7 @@ UserController.prototype.login = async (req, res, next) => {
     user.set({ 'expriedTime' : expriedTime });
     user = await user.save();
     
-    return res.json(helpers.success({id: user._id, token}));
+    return res.json(helpers.success({id: user._id, ...token}));
   } catch (err) {
     return res.status(400).end();
   }
@@ -66,13 +66,13 @@ UserController.prototype.logingg = async (req, res, next) => {
   try {
     const userData = await userModel.findOne({ email }).select('id').exec();
     if(userData)
-      return res.json(helpers.success({ token : helpers.getJwtToken(userData._id), id : userData._id }));
+      return res.json(helpers.success({ ...helpers.getJwtToken(userData._id), id : userData._id }));
     
     const expriedTime = helpers.getCurrentUnixTime() + configs.jwtExpiredTine * 60;
     const user = new userModel({ ...req.body, password: 'na', expriedTime, type : configs.NO_TYPE });
     const userSaved = await user.save();
 
-    return res.json(helpers.success({ token : helpers.getJwtToken(userSaved._id), id : userSaved._id }));
+    return res.json(helpers.success({ ...helpers.getJwtToken(userSaved._id), id : userSaved._id }));
   } catch(err) {
     return res.status(400).json(helpers.fail(err.message));
   }
