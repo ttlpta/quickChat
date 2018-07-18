@@ -25,7 +25,7 @@ export default class Signup extends Component
         this.setState({});
         jquery.alert('Signup success');
         localStorage.setItem('quickchat', JSON.stringify(response.data.data));
-        this.props.history.push('/')
+        this.props.history.push('/');
       } else {
         jquery.alert('Signup fail', 'warn');
       }

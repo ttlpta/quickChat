@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
+import _ from "lodash";
 
+import { alert } from '../jquery';
 import axios from "../axios";
 import SocialLogin from "./SocialLogin";
 import { checkIsLogging } from '../utils';
@@ -24,7 +26,14 @@ export default class Login extends Component
     e.preventDefault();
     this.setState({ errMsg : '' });
     try {
-      const response = await axios.post('/user/login', this.state);
+      const response = await axios.post('/user/login', _.pick(this.state, ['email', 'password']));
+      if(response.data.success){
+        alert('Login success');
+        localStorage.setItem('quickchat', JSON.stringify(response.data.data));
+        this.props.history.push('/');
+      } else {
+        alert('Login fail', 'warn');
+      }
     } catch ({ response }) {
       this.setState({ errMsg : response.data.message });
     }
