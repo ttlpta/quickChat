@@ -1,26 +1,16 @@
 import _ from "lodash";
-import axios from "./axios";
-import * as jquery from "./jquery";
 
-export const checkIsLogging = async () => {
+export const checkIsLogging = () => {
   const quickChatData = JSON.parse(localStorage.getItem('quickchat'));
   if(_.isEmpty(quickChatData) || _.isNull(quickChatData))
     return false;
 
   const token = quickChatData.token;
-  try {
-    const response = await axios.get('/auth/user/checkExpiredToken', {
-      headers :  {
-        Authorization: token
-      }
-    });
+  if(!token)
+    return false;
 
-    return !response.data.isExpired;
-  } catch ({ response }) {
-    if(response.status == 403) {
-      return false;
-    } 
-    
-    jquery.alert(response.statusText, 'warn');
-  }
+  const expiredTime = quickChatData.expiredTime;
+  const timestamp = Date.now();
+
+  return timestamp < expiredTime - 60 * 60;
 }

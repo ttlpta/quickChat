@@ -3,6 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 
 import axios from "../axios";
 import SocialLogin from "./SocialLogin";
+import { checkIsLogging } from '../utils';
 
 export default class Login extends Component
 {
@@ -30,6 +31,11 @@ export default class Login extends Component
   }
 
   render() {
+    const { from } = this.props.location.state || { from: { pathname: "/" } };
+
+    if(checkIsLogging())
+      return <Redirect to={from} />;
+
     return (
       <div className="main">
         <SocialLogin />

@@ -7,9 +7,6 @@ module.exports = {
     // const timestamp = Math.floor(dateTime / 1000);
     const configExpiredTime = keepLogin ? configs.jwtExpiredLongTine : configs.jwtExpiredTine
     const expiredTime = +timestamp + configExpiredTime * 1000;
-    console.log(timestamp);
-    console.log(configExpiredTime);
-    console.log(expiredTime);
     return {
       token : jwt.sign({ id }, configs.jwtToken, {
         expiresIn: keepLogin ? configs.jwtExpiredLongTine : configs.jwtExpiredTine // expires in 24 hours
