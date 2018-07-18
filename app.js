@@ -1,4 +1,6 @@
 const multer = require('multer');
+const fs = require('fs');
+const sharp = require('sharp');
 
 const user = require('./routes/user');
 const helpers = require('./helper');
@@ -19,7 +21,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage : storage}).single('avatar');
 module.exports = app => {
-  app.use((err, req, res, next) => {
+  app.use((err, req, res, next) => { // Error
     res.status(err.status || 500);
     if (err.errors && Object.keys(err.errors).length) {
       res.json({
@@ -30,7 +32,6 @@ module.exports = app => {
       res.send(err.message);
     }
   });
-
   app.use('/api/auth/*', function (req, res, next) {
     const token = req.get('Authorization');
     if(!token)
@@ -53,16 +54,22 @@ module.exports = app => {
   app.use('/api(/auth)?/user', user);
 
   app.get('*', function(req, res){
+    console.log('111111111111');
     res.sendFile(__dirname + '/quick-chat/build/index.html');
   });
 
   app.post('/api/auth/files', (req, res) => {
     upload(req, res, function(err) {
-      filename = req.file.filename;
       if(err) 
         return res.status(400).end();
 
-      return res.json(helpers.success({ imageUrl : filename }));
+      let transform = sharp();
+      transform = transform.resize(450, 450).embed();
+      const readStream = fs.createReadStream(req.file.path);
+      const filename = req.file.filename;
+      readStream.pipe(transform).pipe(fs.createWriteStream(`uploads/avatars/avatar_${filename}`))
+      
+      return res.json(helpers.success({ imageUrl : `avatar_${filename}` }));
     });
   });
 };

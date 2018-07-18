@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 
-import axios from "../axios";
+import axios, { authAxios } from "../axios";
 import { alert } from '../jquery';
+import { getQuickchatLocalData, uploadImage } from '../utils';
 import { NO_IMAGE } from '../contanst';
 export default class Chat extends Component
 {
@@ -11,6 +12,7 @@ export default class Chat extends Component
       user : {}
     };
     this.canUpdateProfile = false;
+    this.uploadAvatarInput = React.createRef();
   }
 
   jqueryInit() {
@@ -73,7 +75,10 @@ export default class Chat extends Component
 
   getProfileUser = async () => {
     try {
-      const { data } = await axios.get('/auth/user/detail');
+      const quickchat = getQuickchatLocalData();
+      const { data } = await authAxios().get('/auth/user/detail', {
+        headers : { Authorization: quickchat.token }
+      });
       if(data.success) {
         this.setState({
           user : {
@@ -96,7 +101,7 @@ export default class Chat extends Component
       setTimeout(async () => {
         const user = this.state.user;
         try {
-          const { data } = await axios.put('/auth/user/detail', user);
+          const { data } = await authAxios().put('/auth/user/detail', user);
           if(data.success) {
             alert('Updated success');
             this.setState({
@@ -122,6 +127,37 @@ export default class Chat extends Component
     if(e.target.value != this.state.user[e.target.name]) {
       this.setState({ user : { ...this.state.user, [e.target.name] : e.target.value } });
       this.canUpdateProfile = true;
+    }
+  }
+
+  uploadFile = () => {
+    this.uploadAvatarInput.current.click();
+  }
+
+  readUrl = async e => {
+    const input = e.target;
+    if (input.files && input.files[0]) {
+      try {
+        let imgFormData = new FormData();
+        imgFormData.append('avatar', input.files[0], 'profile.jpg');
+        const imageUrl = await uploadImage(imgFormData);
+        if(imageUrl) {
+          const { data } = await authAxios().put('/auth/user/detail', { avatar : imageUrl });
+          if(data.success) {
+            alert('Upload avatar success');
+            this.setState({
+              user : {
+                ...this.state.user,
+                avatar : data.data.avatar || NO_IMAGE
+              }
+            });
+          } else {
+            alert('Upload avatar fail', 'warn');
+          }
+        }
+      } catch ({ response }) {
+        alert(response.statusText, 'warn');
+      }
     }
   }
 
@@ -154,8 +190,8 @@ export default class Chat extends Component
                 <input name="firstname" type="text" value={ this.state.user.firstname } onChange={ this.onChangeText } onBlur={ this.updateProfile }/>
                 <label htmlFor="lastname"><i className="fa fa-user fa-fw" aria-hidden="true"></i></label>
                 <input name="lastname" type="text" value={ this.state.user.lastname } onChange={ this.onChangeText } onBlur={ this.updateProfile }/>
-                <label htmlFor="avatar"><i className="fa fa-camera fa-fw" aria-hidden="true"></i></label>
-                <input name="avatar" type="button" value="Change Avatar"/>
+                <input type="file" onChange={ this.readUrl } name="avatarUploaed" ref={ this.uploadAvatarInput } style={{ display : 'none' }}/>
+                <button onClick={ this.uploadFile }><i className="fa fa-camera fa-fw" aria-hidden="true"></i></button>
               </div>
             </div>
           </div>

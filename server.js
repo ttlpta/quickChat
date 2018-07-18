@@ -11,7 +11,7 @@ app.set('view engine', 'html');
 app.use(cors());   
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/quick-chat/build'));
-
+app.use('/avatar', express.static(__dirname + '/uploads/avatars'));
 // var chat = io.of('/chat'); //Namespace
 
 // chat.on('connection', function (socket) {
@@ -26,7 +26,6 @@ app.use(express.static(__dirname + '/quick-chat/build'));
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://mongodb/quickchat');
 const routes = require('./app');
-
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
