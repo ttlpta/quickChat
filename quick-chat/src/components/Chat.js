@@ -75,10 +75,7 @@ export default class Chat extends Component
 
   getProfileUser = async () => {
     try {
-      const quickchat = getQuickchatLocalData();
-      const { data } = await authAxios().get('/auth/user/detail', {
-        headers : { Authorization: quickchat.token }
-      });
+      const { data } = await authAxios().get('/auth/user/detail');
       if(data.success) {
         this.setState({
           user : {
@@ -89,8 +86,8 @@ export default class Chat extends Component
           }
         });
       }
-    } catch ({ response }) {
-      if(response.status == 400) {
+    } catch (err) {
+      if(err.response.status == 400) {
         alert('Token expired', 'warn');
       }
     }
@@ -145,12 +142,14 @@ export default class Chat extends Component
           const { data } = await authAxios().put('/auth/user/detail', { avatar : imageUrl });
           if(data.success) {
             alert('Upload avatar success');
-            this.setState({
-              user : {
-                ...this.state.user,
-                avatar : data.data.avatar || NO_IMAGE
-              }
-            });
+            setTimeout(() => {
+              this.setState({
+                user : {
+                  ...this.state.user,
+                  avatar : data.data.avatar || NO_IMAGE
+                }
+              });
+            }, 500);
           } else {
             alert('Upload avatar fail', 'warn');
           }

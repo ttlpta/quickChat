@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const configs = require('../configs');
+
 const userShema = mongoose.Schema({
   email: { type : String, unique: true, required: [true, 'Email is required'] },
   password: { type : String, required: [true, 'Password is required'] },
@@ -10,6 +12,7 @@ const userShema = mongoose.Schema({
   ggId: String,
   avatar: String,
   type: Number,
+  status : { type : Number, default : configs.OFFLINE }
 });
 
 module.exports = mongoose.model('User', userShema);

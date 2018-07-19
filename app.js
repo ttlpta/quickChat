@@ -54,7 +54,6 @@ module.exports = app => {
   app.use('/api(/auth)?/user', user);
 
   app.get('*', function(req, res){
-    console.log('111111111111');
     res.sendFile(__dirname + '/quick-chat/build/index.html');
   });
 

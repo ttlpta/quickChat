@@ -100,6 +100,17 @@ UserController.prototype.updateProfile = async (req, res, next) => {
   }
 }
 
+UserController.prototype.updateStatus = async (req, res, next) => {
+  try {
+    const body = _.pick(req.body, ['status']);
+    const response = await userModel.updateOne({ _id : req.user_id }, body);
+    
+    return response.ok ? res.json({ success: true }) : res.status(400).end();
+  } catch(err) {
+    return res.status(400).end();
+  }
+}
+
 UserController.prototype.logout = async (req, res, next) => {
   try {
     const result = await userModel.update({ _id: req.user_id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
@@ -110,6 +121,5 @@ UserController.prototype.logout = async (req, res, next) => {
   }
 }
 
-UserController.prototype.checkExpiredToken = (req, res, next) => res.json({ success: true, isExpired : false });
 
 module.exports = new UserController();
