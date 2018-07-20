@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 
-import axios, { authAxios } from "../axios";
+import { authAxios } from "../axios";
 import { alert } from '../jquery';
-import { getQuickchatLocalData, uploadImage } from '../utils';
-import { NO_IMAGE } from '../contanst';
+import { uploadImage } from '../utils';
+import { NO_IMAGE, OFFLINE, ONLINE, BUSY } from '../contanst';
+import socket from '../socket';
+
 export default class Chat extends Component
 {
   constructor(props) {
@@ -13,6 +15,7 @@ export default class Chat extends Component
     };
     this.canUpdateProfile = false;
     this.uploadAvatarInput = React.createRef();
+    
   }
 
   jqueryInit() {
@@ -160,12 +163,30 @@ export default class Chat extends Component
     }
   }
 
+  onChangeStatus = async status => {
+    //const response = await authAxios()
+    console.log('===>', status);
+  }
+
   componentDidMount(){
     this.jqueryInit();
     this.getProfileUser();
+    // socket.emit('chat message', 'tanh');
   }
 
   render() {
+    const statusListLabel = {
+      'offline' : 'Offline',
+      'online' : 'Online',
+      'busy' : 'Busy',
+    };
+
+    const statusListValue = {
+      'offline' : OFFLINE,
+      'online' : ONLINE,
+      'busy' : BUSY,
+    };
+
     return (
       <div id="frame">
         <div id="sidepanel">
@@ -176,10 +197,17 @@ export default class Chat extends Component
               <i className="fa fa-chevron-down expand-button" aria-hidden="true"></i>
               <div id="status-options">
                 <ul>
-                  <li id="status-online" className="active"><span className="status-circle"></span> <p>Online</p></li>
+                  {
+                    Object.keys(statusListLabel).map((label, index) => {
+                      return (<li id={`status-${label}`} className="active" onClick={ () => this.onChangeStatus(statusListValue[label]) }>
+                        <span className="status-circle"></span> <p>{statusListLabel[label]}</p>
+                      </li>);
+                    })
+                  }
+                  {/* <li id="status-online" className="active"><span className="status-circle"></span> <p>Online</p></li>
                   <li id="status-away"><span className="status-circle"></span> <p>Away</p></li>
                   <li id="status-busy"><span className="status-circle"></span> <p>Busy</p></li>
-                  <li id="status-offline"><span className="status-circle"></span> <p>Offline</p></li>
+                  <li id="status-offline"><span className="status-circle"></span> <p>Offline</p></li> */}
                 </ul>
               </div>
               <div id="expanded">
