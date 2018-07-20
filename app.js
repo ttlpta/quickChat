@@ -1,25 +1,12 @@
 const multer = require('multer');
 const fs = require('fs');
 const sharp = require('sharp');
+const _ = require('lodash');
 
 const user = require('./routes/user');
 const helpers = require('./helper');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, './uploads');
-  },
-  filename: function (req, file, callback) {
-    const mapType = {
-      'image/jpeg' : 'jpg',
-      'image/jpg' : 'jpg',
-      'image/png' : 'png',
-    }
-    callback(null, `${req.user_id}_${Date.now()}.${mapType[file.mimetype]}`);
-  }
-});
-
-const upload = multer({ storage : storage}).single('avatar');
+const upload = multer({ dest: "./tmp" }).single('avatar');
 module.exports = app => {
   app.use((err, req, res, next) => { // Error
     res.status(err.status || 500);
@@ -59,13 +46,19 @@ module.exports = app => {
 
   app.post('/api/auth/files', (req, res) => {
     upload(req, res, function(err) {
+      
       if(err) 
         return res.status(400).end();
-
       let transform = sharp();
-      transform = transform.resize(450, 450).embed();
+      transform = transform.resize(450, 450).crop(sharp.strategy.center);
       const readStream = fs.createReadStream(req.file.path);
-      const filename = req.file.filename;
+      const mapType = {
+        'image/jpeg' : 'jpg',
+        'image/jpg' : 'jpg',
+        'image/png' : 'png',
+      }
+      const type = _.isUndefined(mapType[req.file.mimetype]) ? 'png' : mapType[req.file.mimetype];
+      const filename = `${req.user_id}_${Date.now()}.${mapType[req.file.mimetype]}`;
       readStream.pipe(transform).pipe(fs.createWriteStream(`uploads/avatars/avatar_${filename}`))
       
       return res.json(helpers.success({ imageUrl : `avatar_${filename}` }));
