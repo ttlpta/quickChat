@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import _ from "lodash";
 
 import axios from "../axios";
 import SocialLogin from "./SocialLogin";

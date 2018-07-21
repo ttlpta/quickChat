@@ -4,7 +4,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { checkIsLogging } from "../utils";
 import Login from './Login';
 import Signup from './Signup';
-import Chat from './Chat';
+import Chat from './Chat/Chat';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const isLoggin = checkIsLogging();

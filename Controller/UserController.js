@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+const io = require('../socket');
 const configs = require('../configs');
 const helpers = require('../helper');
 const userModel = require('../Model/UserModel');
@@ -81,7 +82,7 @@ UserController.prototype.logingg = async (req, res, next) => {
 UserController.prototype.detail = async (req, res, next) => {
   try {
     const user = await userModel.findOne({ _id : req.user_id })
-      .select('id firstname lastname email avatar')
+      .select('id firstname lastname email avatar status')
       .exec();
       
     return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user });
@@ -104,14 +105,29 @@ UserController.prototype.updateStatus = async (req, res, next) => {
   try {
     const body = _.pick(req.body, ['status']);
     const response = await userModel.updateOne({ _id : req.user_id }, body);
-    
+    const data = {
+      user_id : req.user_id,
+      status : body.status
+    };
+  
     return response.ok ? res.json({ success: true }) : res.status(400).end();
   } catch(err) {
+    console.log(err);
     return res.status(400).end();
   }
 }
 
 UserController.prototype.logout = async (req, res, next) => {
+  try {
+    const result = await userModel.update({ _id: req.user_id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
+    
+    return result.ok ? res.json({ success: true, data: {} }) : res.status(400).end();
+  } catch(err) {
+    return res.status(400).end();
+  }
+}
+
+UserController.prototype.listContacts = async (req, res, next) => {
   try {
     const result = await userModel.update({ _id: req.user_id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
     

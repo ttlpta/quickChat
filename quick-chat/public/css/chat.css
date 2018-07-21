@@ -1,3 +1,8 @@
+* {
+  -webkit-box-sizing: unset;
+  -moz-box-sizing: unset;
+  box-sizing: unset;
+}
 
 #root {
   display: flex;
@@ -298,7 +303,7 @@
 #frame #sidepanel #search input {
   font-family: "proxima-nova",  "Source Sans Pro", sans-serif;
   padding: 10px 0 10px 46px;
-  width: calc(100% - 25px);
+  width: 100%;
   border: none;
   background: #32465a;
   color: #f5f5f5;
