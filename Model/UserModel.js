@@ -11,8 +11,11 @@ const userShema = mongoose.Schema({
   fbId: String,
   ggId: String,
   avatar: String,
+  description : String,
   type: Number,
-  status : { type : Number, default : configs.OFFLINE }
+  status : { type : Number, default : configs.OFFLINE },
+  contacts : [{ id : mongoose.Schema.Types.ObjectId, name : String, avatar : String, description : String, status : Number }]
 });
 
+userShema.index({ email : 'text', firstname : 'text', lastname : 'text' });
 module.exports = mongoose.model('User', userShema);

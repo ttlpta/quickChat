@@ -1,9 +1,3 @@
-* {
-  -webkit-box-sizing: unset;
-  -moz-box-sizing: unset;
-  box-sizing: unset;
-}
-
 #root {
   display: flex;
   /* align-items: center; */
@@ -389,6 +383,7 @@
   border-radius: 50%;
   border: 2px solid #2c3e50;
   background: #95a5a6;
+  box-sizing: unset;
 }
 #frame #sidepanel #contacts ul li.contact .wrap span.online {
   background: #2ecc71;
@@ -432,6 +427,7 @@
   -o-transition: 1s all ease;
   -webkit-transition: 1s all ease;
   transition: 1s all ease;
+  min-height: 15px;
 }
 #frame #sidepanel #contacts ul li.contact .wrap .meta .preview span {
   position: initial;

@@ -104,15 +104,14 @@ UserController.prototype.updateProfile = async (req, res, next) => {
 UserController.prototype.updateStatus = async (req, res, next) => {
   try {
     const body = _.pick(req.body, ['status']);
-    const response = await userModel.updateOne({ _id : req.user_id }, body);
-    const data = {
-      user_id : req.user_id,
-      status : body.status
-    };
+    if(!_.isNull(body.status)) {
+      const response = await userModel.updateOne({ _id : req.user_id }, body);
+
+      return response.ok ? res.json({ success: true }) : res.status(400).end();
+    }
   
-    return response.ok ? res.json({ success: true }) : res.status(400).end();
+    return res.status(400).end();
   } catch(err) {
-    console.log(err);
     return res.status(400).end();
   }
 }
@@ -121,7 +120,7 @@ UserController.prototype.logout = async (req, res, next) => {
   try {
     const result = await userModel.update({ _id: req.user_id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
     
-    return result.ok ? res.json({ success: true, data: {} }) : res.status(400).end();
+    return result.ok ? res.json({ success: true }) : res.status(400).end();
   } catch(err) {
     return res.status(400).end();
   }
@@ -129,10 +128,23 @@ UserController.prototype.logout = async (req, res, next) => {
 
 UserController.prototype.listContacts = async (req, res, next) => {
   try {
-    const result = await userModel.update({ _id: req.user_id }, { $set: { expriedTime: helpers.getCurrentUnixTime() }});
+    const user = await userModel.findById(req.user_id);
     
-    return result.ok ? res.json({ success: true, data: {} }) : res.status(400).end();
+    return user ? res.json({ success: true, data: user.contacts }).end() : res.status(422).end();
   } catch(err) {
+    return res.status(400).end();
+  }
+}
+
+UserController.prototype.search = async (req, res, next) => {
+  try {
+    const searchTxt = req.query.q;
+    const user = await userModel.find({$text: { $search: `\"${searchTxt}\"`, $caseSensitive: true }})
+      .select('id firstname lastname avatar description status').limit(20);
+    
+    return user ? res.json({ success: true, data: user }).end() : res.status(422).end();
+  } catch(err) {
+    console.log(err);
     return res.status(400).end();
   }
 }

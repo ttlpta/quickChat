@@ -9,6 +9,7 @@ import socket from '../../socket';
 import Contacts from "./Contacts";
 import ModalAddContacts from "./ModalAddContacts";
 
+const $ = window.$;
 export default class Chat extends Component
 {
   constructor(props) {
@@ -22,7 +23,6 @@ export default class Chat extends Component
   }
 
   jqueryInit() {
-    const $ = window.$;
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
     $("#profile-img").click(function() {
       $("#status-options").toggleClass("active");
@@ -57,7 +57,6 @@ export default class Chat extends Component
   }
 
   changeStatusBorder() {
-    const $ = window.$;
     $("#profile-img").removeClass();
     if(this.state.user.status == ONLINE) {
       $("#profile-img").addClass("online");
@@ -269,7 +268,7 @@ export default class Chat extends Component
               </div>
             </div>
           </div>
-          <Contacts />
+          <Contacts socket={ socket } />
           <div id="bottom-bar">
             <button id="addcontact" data-toggle="modal" data-target="#myModal"><i className="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
             <button id="settings"><i className="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
