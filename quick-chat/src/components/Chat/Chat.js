@@ -15,7 +15,9 @@ export default class Chat extends Component
   constructor(props) {
     super(props);
     this.state = {
-      user : {}
+      user : {},
+      expand : false,
+      expand2 : false
     };
     this.canUpdateProfile = false;
     this.uploadAvatarInput = React.createRef();
@@ -24,14 +26,6 @@ export default class Chat extends Component
 
   jqueryInit() {
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-    $("#profile-img").click(function() {
-      $("#status-options").toggleClass("active");
-    });
-
-    $(".expand-button").click(function() {
-      $("#profile").toggleClass("expanded");
-      $("#contacts").toggleClass("expanded");
-    });
 
     function newMessage() {
       const message = $(".message-input input").val();
@@ -238,12 +232,20 @@ export default class Chat extends Component
     return (
       <div id="frame">
         <div id="sidepanel">
-          <div id="profile">
+          <div id="profile" className={ this.state.expand2 ? 'expanded' : '' }>
             <div className="wrap">
-              <img id="profile-img" src={ this.state.user.avatar } className="online" />
+              <img 
+                id="profile-img" 
+                src={ this.state.user.avatar } 
+                className="online" 
+                onClick={ () => this.setState( state => ({ expand : ! state.expand }) ) }
+              />
               <p>{ this.state.user.firstname } { this.state.user.lastname }</p>
-              <i className="fa fa-chevron-down expand-button" aria-hidden="true"></i>
-              <div id="status-options">
+              <i onClick={ () => this.setState( state => ({ expand2 : !state.expand2 }) ) }
+                className="fa fa-chevron-down expand-button" 
+                aria-hidden="true">
+              </i>
+              <div id="status-options" className={ this.state.expand ? 'active' : '' }>
                 <ul>
                   {
                     Object.keys(statusListLabel).map((label, index) => {
@@ -268,7 +270,7 @@ export default class Chat extends Component
               </div>
             </div>
           </div>
-          <Contacts socket={ socket } />
+          <Contacts socket={ socket } expand={ this.state.expand2 } />
           <div id="bottom-bar">
             <button id="addcontact" data-toggle="modal" data-target="#myModal"><i className="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
             <button id="settings"><i className="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>

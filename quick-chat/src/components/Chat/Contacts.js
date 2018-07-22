@@ -73,7 +73,7 @@ export default class Contacts extends Component
           <label htmlFor="search"><i className="fa fa-search" aria-hidden="true"></i></label>
           <input type="text" name="search" placeholder="Search contacts..." onChange={ this.onSearch } />
         </div>
-        <div id="contacts">
+        <div id="contacts" className={ this.props.expand ? 'expanded' : '' }>
           <ul>
             {
               this.state.contacts.map((item, idx) => {
