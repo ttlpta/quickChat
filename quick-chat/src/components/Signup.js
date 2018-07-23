@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import axios from "../axios";
 import SocialLogin from "./SocialLogin";
-import * as jquery from '../jquery';
+import * as jquery from '../utils';
 
 export default class Signup extends Component
 {
@@ -26,7 +26,7 @@ export default class Signup extends Component
         localStorage.setItem('quickchat', JSON.stringify(response.data.data));
         this.props.history.push('/');
       } else {
-        jquery.alert('Signup fail', 'warn');
+        jquery.alert('Signup fail', 'error');
       }
     } catch ({ response }) {
       this.setState({ errMsg : response.data.message });

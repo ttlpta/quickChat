@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import _ from "lodash";
 
-import { alert } from '../jquery';
 import axios from "../axios";
 import SocialLogin from "./SocialLogin";
-import { checkIsLogging } from '../utils';
+import { alert, checkIsLogging } from '../utils';
 
 export default class Login extends Component
 {
@@ -32,7 +31,7 @@ export default class Login extends Component
         localStorage.setItem('quickchat', JSON.stringify(response.data.data));
         this.props.history.push('/');
       } else {
-        alert('Login fail', 'warn');
+        alert('Login fail', 'error');
       }
     } catch ({ response }) {
       this.setState({ errMsg : response.data.message });

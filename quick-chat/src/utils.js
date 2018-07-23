@@ -2,6 +2,7 @@ import _ from "lodash";
 
 import axios from "./axios";
 import { SERVER_IMAGE_URL } from "./contanst";
+import notifyHolder from "./components/NotifyHolder";
 
 export const checkIsLogging = () => {
   const quickChatData = JSON.parse(localStorage.getItem('quickchat'));
@@ -35,4 +36,11 @@ export const uploadImage = async dataImage => {
   } catch(e) {
     console.log('=======>', e);
   };
+}
+
+export const alert = (msg, type = 'success') => {
+  notifyHolder.getNotify().addNotification({
+    message: msg,
+    level: 'success'
+  });
 }

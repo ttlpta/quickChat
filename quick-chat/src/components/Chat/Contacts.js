@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import _ from 'lodash';
+
 import { authAxios } from "../../axios";
 import { NO_IMAGE, OFFLINE, ONLINE, BUSY, FORCE_OFFLINE } from '../../contanst';
 
-const $ = window.$;
 export default class Contacts extends Component
 {
   constructor(props) {
@@ -53,8 +54,18 @@ export default class Contacts extends Component
         [OFFLINE] : 'online',
         [BUSY] : 'busy',
       };
-
-      $(`#${data.user_id}`).removeClass().addClass(`contact-status ${statusListClass[data.status]}`);
+      
+      const contactItem = document.getElementById(`${data.user_id}`);
+      if(contactItem) {
+        const arr = contactItem.className.split(" ");
+        for(let name of arr) {
+          if(name != 'contact-status')
+            contactItem.classList.remove(name);
+        }
+  
+        const classStatus = _.isUndefined(statusListClass[data.status]) ? 'offline' : statusListClass[data.status];
+        contactItem.classList.add(`${classStatus}`);
+      }
     });
   }
 

@@ -2,12 +2,10 @@ import React, { Component } from "react";
 import _ from 'lodash';
 
 import { authAxios } from "../../axios";
-import { alert } from '../../jquery';
-import { uploadImage } from '../../utils';
+import { alert, uploadImage } from '../../utils';
 import { NO_IMAGE, OFFLINE, ONLINE, BUSY, FORCE_OFFLINE } from '../../contanst';
 import socket from '../../socket';
 import Contacts from "./Contacts";
-import ModalAddContacts from "./ModalAddContacts";
 
 const $ = window.$;
 export default class Chat extends Component
@@ -17,7 +15,8 @@ export default class Chat extends Component
     this.state = {
       user : {},
       expand : false,
-      expand2 : false
+      expand2 : false,
+      clsStatus : ''
     };
     this.canUpdateProfile = false;
     this.uploadAvatarInput = React.createRef();
@@ -51,15 +50,14 @@ export default class Chat extends Component
   }
 
   changeStatusBorder() {
-    $("#profile-img").removeClass();
     if(this.state.user.status == ONLINE) {
-      $("#profile-img").addClass("online");
+      this.setState({ clsStatus : 'online' });
     } else if(this.state.user.status == OFFLINE || this.state.user.status == FORCE_OFFLINE) {
-      $("#profile-img").addClass("offline");
+      this.setState({ clsStatus : 'offline' });
     } else if(this.state.user.status == BUSY) {
-      $("#profile-img").addClass("busy");
+      this.setState({ clsStatus : 'busy' });
     } else {
-      $("#profile-img").removeClass();
+      this.setState({ clsStatus : '' });
     }
   }
 
@@ -85,7 +83,7 @@ export default class Chat extends Component
           window.location.reload() 
         } 
       }
-      alert('Error', 'warn');
+      alert('Error', 'error');
     }
   }
 
@@ -107,10 +105,10 @@ export default class Chat extends Component
               }
             });
           } else {
-            alert('Updated fail', 'warn');
+            alert('Updated fail', 'error');
           }
         } catch ({ response }) {
-          alert(response.message, 'warn');
+          alert(response.message, 'error');
         }
       }, 500);
       this.canUpdateProfile = false;
@@ -148,11 +146,11 @@ export default class Chat extends Component
               });
             }, 500);
           } else {
-            alert('Upload avatar fail', 'warn');
+            alert('Upload avatar fail', 'error');
           }
         }
       } catch ({ response }) {
-        alert(response.statusText, 'warn');
+        alert(response.statusText, 'error');
       }
     }
   }
@@ -162,7 +160,7 @@ export default class Chat extends Component
       try {
         const response = await authAxios().put('/auth/user/updateStatus', { status });
         if(response.data.success) {
-          // this.setState({ user : { ...this.state.user, status : status }});
+          this.setState({ user : { ...this.state.user, status : status }});
           const wsData = {
             user_id : this.state.user.id,
             status
@@ -197,7 +195,7 @@ export default class Chat extends Component
   }
 
   componentDidMount(){
-    this.jqueryInit();
+    // this.jqueryInit();
     this.getProfileUser();
     socket.on('update_status_user', data => {
       if(this.state.user.id == data.user_id) {
@@ -235,9 +233,9 @@ export default class Chat extends Component
           <div id="profile" className={ this.state.expand2 ? 'expanded' : '' }>
             <div className="wrap">
               <img 
-                id="profile-img" 
+                id='profile-img'
                 src={ this.state.user.avatar } 
-                className="online" 
+                className={this.state.clsStatus}
                 onClick={ () => this.setState( state => ({ expand : ! state.expand }) ) }
               />
               <p>{ this.state.user.firstname } { this.state.user.lastname }</p>
@@ -330,7 +328,6 @@ export default class Chat extends Component
             </div>
           </div>
         </div>
-        <ModalAddContacts />
       </div>
     );
   }
