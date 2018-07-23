@@ -94,7 +94,7 @@ export default class Contacts extends Component
                       <span id={item._id} className={`contact-status ${statusListClass[item.status]}`}></span>
                       <img src={ item.avatar || NO_IMAGE } alt="avatar" />
                       <div className="meta">
-                        <p className="name">{ `${item.firstname} ${item.lastname}` }</p>
+                        <p className="name">{ `${item.name || item.firstname + ' ' + item.lastname}` }</p>
                         <p className="preview">{ item.description || '' }</p>
                       </div>
                     </div>

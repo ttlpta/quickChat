@@ -138,21 +138,28 @@ UserController.prototype.listContacts = async (req, res, next) => {
 
 UserController.prototype.addContact = async (req, res, next) => {
   try {
-    const partner = await userModel.findById(req.body.partner_id);
-    const contact = {
-      _id : partner._id,
-      name : `${partner.firstname} ${partner.lastname}`,
-      avatar : partner.avatar,
-      description : partner.description || '',
-      avatar : partner.avatar,
-      love : false,
-      block : false
-    };
-    console.log('=====aaaaa=>', req.user_id);
-    console.log('======>', contact);
-    const result = await userModel.update({ _id : req.user_id }, {$push: { contacts : contact }}); 
-    console.log('======>', result);
-    return result.ok ? res.json({ success: true }) : res.status(400).end();
+    if(!req.body.partner_id)
+      throw Error;
+    
+    const user = await userModel.findById(req.user_id);
+    const contact = user.contacts.id(req.body.partner_id);
+    if(_.isNull(contact)) {
+      const partner = await userModel.findById(req.body.partner_id);
+      const data = {
+        _id : partner._id,
+        name : `${partner.firstname} ${partner.lastname}`,
+        avatar : partner.avatar,
+        description : partner.description || '',
+        avatar : partner.avatar,
+        love : false,
+        block : false
+      };
+      const result = await user.update({$push: { contacts : data }}); 
+      return result.ok ? res.json({ success: true }) : res.status(400).end();
+    } else {
+      return res.status(409).end();
+    }
+
   } catch(err) {
     return res.status(400).end();
   }
