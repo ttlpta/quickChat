@@ -13,6 +13,7 @@ router.get('/detail', userCtrl.detail);
 router.put('/detail', userCtrl.updateProfile);
 router.put('/updateStatus', userCtrl.updateStatus);
 router.get('/listContacts', userCtrl.listContacts);
+router.put('/addContact', userCtrl.addContact);
 router.get('/search', userCtrl.search);
 
 module.exports = router;

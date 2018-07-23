@@ -14,7 +14,7 @@ const userShema = mongoose.Schema({
   description : String,
   type: Number,
   status : { type : Number, default : configs.OFFLINE },
-  contacts : [{ id : mongoose.Schema.Types.ObjectId, name : String, avatar : String, description : String, status : Number }]
+  contacts : [{ id : mongoose.Schema.Types.ObjectId, name : String, avatar : String, description : String, block : Boolean, love : Boolean }]
 });
 
 userShema.index({ email : 'text', firstname : 'text', lastname : 'text' });

@@ -31,7 +31,8 @@ module.exports = app => {
       if(decoded.exp < currentTime)
         return res.status(403).end();
 
-      req.user_id = decoded.id;
+      const userId = req.body.user_id || req.query.user_id;
+      req.user_id = userId ? userId : decoded.id;
     } catch(err) {
       return res.status(403).json(err);
     }

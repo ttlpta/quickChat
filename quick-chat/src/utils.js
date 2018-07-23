@@ -41,6 +41,6 @@ export const uploadImage = async dataImage => {
 export const alert = (msg, type = 'success') => {
   notifyHolder.getNotify().addNotification({
     message: msg,
-    level: 'success'
+    level: type
   });
 }
