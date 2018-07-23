@@ -59,7 +59,7 @@ export default class Contacts extends Component
       if(contactItem) {
         const arr = contactItem.className.split(" ");
         for(let name of arr) {
-          if(name != 'contact-status')
+          if(arr.indexOf(name) != -1)
             contactItem.classList.remove(name);
         }
   
