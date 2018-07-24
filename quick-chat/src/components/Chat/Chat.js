@@ -158,7 +158,7 @@ export default class Chat extends Component
   onChangeStatus = async status => {
     if(this.state.user.status != status) {
       try {
-        const response = await authAxios().put('/auth/user/updateStatus', { status });
+        const response = await authAxios().put('/auth/user/status', { status });
         if(response.data.success) {
           this.setState({ user : { ...this.state.user, status : status }});
           const wsData = {

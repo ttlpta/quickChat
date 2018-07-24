@@ -85,7 +85,7 @@ UserController.prototype.detail = async (req, res, next) => {
       .select('id firstname lastname email avatar status')
       .exec();
       
-    return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user });
+    return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user }).end();
   } catch(err) {
     return res.status(400).end();
   }
@@ -95,7 +95,7 @@ UserController.prototype.updateProfile = async (req, res, next) => {
   try {
     const body = _.pick(req.body, ['firstname', 'lastname', 'email', 'avatar']);
     const user = await userModel.findByIdAndUpdate(req.user_id, { $set: body }, { new: true }).select('id firstname lastname email avatar');
-    return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user });
+    return _.isEmpty(user) ? res.status(422).end() : res.json({ success: true, data: user }).end();
   } catch(err) {
     return res.status(400).end();
   }
@@ -107,7 +107,7 @@ UserController.prototype.updateStatus = async (req, res, next) => {
     if(!_.isNull(body.status)) {
       const response = await userModel.updateOne({ _id : req.user_id }, body);
 
-      return response.ok ? res.json({ success: true }) : res.status(400).end();
+      return response.ok ? res.json({ success: true }).end() : res.status(400).end();
     }
   
     return res.status(400).end();
@@ -152,7 +152,7 @@ UserController.prototype.addContact = async (req, res, next) => {
     console.log('======>', contact);
     const result = await userModel.update({ _id : req.user_id }, {$push: { contacts : contact }}); 
     console.log('======>', result);
-    return result.ok ? res.json({ success: true }) : res.status(400).end();
+    return result.ok ? res.json({ success: true }).end() : res.status(400).end();
   } catch(err) {
     return res.status(400).end();
   }

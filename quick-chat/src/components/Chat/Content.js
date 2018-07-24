@@ -39,7 +39,7 @@ export default class Content extends Component
 
   addFriend = async () => {
     try {
-      const response = await authAxios().put(`/auth/user/addContact`, { partner_id : this.state.partner.id });
+      const response = await authAxios().post(`/auth/user/contacts`, { partner_id : this.state.partner.id });
       console.log(response);
     } catch (error) {
       console.log(error);
