@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { authAxios } from "../../axios";
 import { NO_IMAGE } from '../../contanst';
 import { alert } from '../../utils'
+import { throws } from "assert";
 
 export default class Content extends Component
 {
@@ -24,6 +25,7 @@ export default class Content extends Component
             firstname : data.data.firstname,
             lastname : data.data.lastname,
             avatar : data.data.avatar || NO_IMAGE,
+            is_partner : false
           }
         });
       }
@@ -40,9 +42,13 @@ export default class Content extends Component
   addFriend = async () => {
     try {
       const response = await authAxios().post(`/auth/user/contacts`, { partner_id : this.state.partner.id });
-      console.log(response);
+      if(response.data.success) {
+        this.setState({ partner : { ...this.state.partner, is_partner : true } });
+      }
     } catch (error) {
-      console.log(error);
+      if(error.response.status == 409) {
+        alert('You have already add this person', 'warning');
+      }
     }
   }
 
@@ -69,7 +75,7 @@ export default class Content extends Component
           <img src={ this.state.partner.avatar } alt="Your partner Avatar" />
           <p>{`${this.state.partner.firstname} ${this.state.partner.lastname}`}</p>
           <div className="social-media">
-            <i className="fa fa fa-user-plus" aria-hidden="true" onClick={ this.addFriend }></i> {/* fa fa-user-times */}
+            <i className={`fa ${ this.state.partner.is_partner ? 'fa-user-times' : 'fa-user-plus'}`} aria-hidden="true" onClick={ this.addFriend }></i> {/* fa fa-user-times */}
             <i className="fa fa-heart-o" aria-hidden="true"></i> {/* fa-heart */}
             <i className="fa fa-hand-pointer-o" aria-hidden="true"></i> 
             <i className="fa fa-video-camera" aria-hidden="true"></i>
